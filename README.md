@@ -6,6 +6,9 @@
    4. jsonwebtoken
    5. bcryptjs
    6. uuid
+   7. ___
+   8. sequelize
+   9. sqlite3
    + nodemon (development dependence)
 
 ## 2. Client
