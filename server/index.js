@@ -4,6 +4,7 @@ const express = require('express')
 const path = require('path')
 const routes = require('./routes')
 const db = require('./db.config')
+const { Role } = require('./models/dbModels')
 const errorMiddleware = require('./middleware/errorMiddleware')
 
 const PORT = process.env.PORT || 5000
@@ -22,7 +23,19 @@ app.get('/', (req, res) => {
 
 const startDbConnection = async () => {
 	try {
-		await db.authenticate().then(await db.sync())
+		// await db.authenticate().then(await db.sync())
+		await db.authenticate()
+		await db.sync()
+		// .then(() => {
+		// 	return db.drop()
+		// })
+
+		// .then(
+		Role.findOrCreate({
+			where: { name: 'USER' },
+			defaults: { name: 'USER' }
+		})
+		// )
 
 		app.listen(PORT, () => {
 			console.log(`Server starting on ${PORT} port...`)

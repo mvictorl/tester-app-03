@@ -1,17 +1,17 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { User } = require('../models/User')
+const { User, Role, UserRole } = require('../models/dbModels')
 const CustomError = require('../models/CustomError')
 
-function generateJwt(id, username, email, role) {
-	return jwt.sign({ id, username, email, role }, process.env.SECRET_KEY, {
+function generateJwt(id, username, email, roles) {
+	return jwt.sign({ id, username, email, roles }, process.env.SECRET_KEY, {
 		expiresIn: '8h'
 	})
 }
 
 class UserController {
 	async register(req, res, next) {
-		const { username, email, password, role } = req.body
+		const { username, email, password } = req.body
 
 		if (!email || !password) {
 			// return res.status(401).json({ message: 'Absent email/password' })
@@ -25,19 +25,44 @@ class UserController {
 		}
 
 		const hashPass = await bcrypt.hash(password, 5)
-		const newUser = await User.create({
-			username,
-			email,
-			password: hashPass,
-			role
-		})
-		const token = generateJwt(
-			newUser.id,
-			newUser.username,
-			newUser.email,
-			newUser.role
-		)
-		return res.json({ token })
+		const roleUser = await Role.findOne({ where: { name: 'USER' } })
+		try {
+			const newUser = await User.create({
+				username,
+				email,
+				password: hashPass
+			})
+			newUser.addRole(roleUser)
+
+			const token = generateJwt(
+				newUser.id,
+				newUser.username,
+				newUser.email,
+				newUser.role
+			)
+			return res.json({ token })
+		} catch (e) {
+			console.error(e)
+			return next(CustomError.internal('Failed to create user'))
+		}
+
+		// Promise.all([
+		// 	User.create({
+		// 		username,
+		// 		email,
+		// 		password: hashPass
+		// 	}),
+		// 	Role.findOrCreate({ where: { name: 'USER' } })
+		// ])
+		// 	.then(([user, [role, isCreated]]) => {
+		// 		console.log('Role', role)
+		// 		UserRole.create({ userId: user.id, roleId: role.id })
+		// 		const token = generateJwt(user.id, user.username, user.email, user.role)
+		// 		return res.json({ token })
+		// 	})
+		// 	.catch(() => {
+		// 		return next(CustomError.internal('Failed to create user'))
+		// 	})
 	}
 
 	async login(req, res, next) {
