@@ -18,31 +18,35 @@ app.use(errorMiddleware)
 
 // TODO: delete test route below
 app.get('/', (req, res) => {
-	res.status(200).json({ message: 'All right!' })
+  res.status(200).json({ message: 'All right!' })
 })
 
 const startDbConnection = async () => {
-	try {
-		// await db.authenticate().then(await db.sync())
-		await db.authenticate()
-		await db.sync()
-		// .then(() => {
-		// 	return db.drop()
-		// })
+  try {
+    // await db.authenticate().then(await db.sync())
+    // await db.authenticate() // logging: false
+    await db.sync()
 
-		// .then(
-		Role.findOrCreate({
-			where: { name: 'USER' },
-			defaults: { name: 'USER' }
-		})
-		// )
 
-		app.listen(PORT, () => {
-			console.log(`Server starting on ${PORT} port...`)
-		})
-	} catch (e) {
-		console.error(e)
-	}
+    await Role.findOrCreate({
+      where: { name: 'ADMIN' },
+      defaults: { name: 'ADMIN' }
+    })
+    // .then(
+    await Role.findOrCreate({
+      where: { name: 'USER' },
+      defaults: { name: 'USER' }
+    }).then(() => {
+      // )
+
+      app.listen(PORT, () => {
+        console.log(`Server starting on ${ PORT } port...`)
+      })
+    }).catch(e => console.error(e))
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 startDbConnection()
+  // .then(() => db.close())

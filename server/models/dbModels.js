@@ -20,7 +20,7 @@ const UserRole = db.define('user_role', {
 
 User.belongsToMany(Role, {
 	through: UserRole
-	// as: 'Role',
+	// as: 'roles'
 	// foreignKey: 'userId'
 })
 Role.belongsToMany(User, {
