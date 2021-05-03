@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const { validationResult } = require('express-validator')
 const { User, Role } = require('../models/dbAuthModels')
 const CustomError = require('../models/CustomError')
 
@@ -11,49 +12,80 @@ function generateJwt(id, username, email, roles) {
 
 class AuthController {
 	async register(req, res, next) {
-		const { username, email, password } = req.body
-		// TODO: catch errors
-		if (!email || !password) {
-			// return res.status(401).json({ message: 'Absent email/password' })
-			return next(CustomError.badRequest('Absent email or password'))
-		}
-
-		const candidate = await User.findOne({ where: { email } })
-		if (candidate) {
-			// return res.status(401).json({ message: 'Email already exist' })
-			return next(CustomError.badRequest('Email already exist'))
-		}
-
-		const hashPass = await bcrypt.hash(password, 5)
-
 		try {
-			const roleUser = await Role.findOne({ where: { name: 'USER' } })
+			const validation = validationResult(req)
+			if (!validation.isEmpty()) {
+				// const duplicate = validation.errors.filter(
+				// 	err => err?.msg === 'Email address already used (Schema)'
+				// )
+				// if (duplicate.length !== 0) {
+				// 	return res
+				// 		.status(409)
+				// 		.json({ message: 'Validation error', validation })
+				// }
+				if (
+					validation.mapped()?.email?.msg ===
+					'Email address already used (Schema)'
+				) {
+					return res
+						.status(409) // Status for dublicate emails
+						.json({ message: 'Validation error', validation })
+				}
+				return res.status(400).json({ message: 'Validation error', validation })
+			}
 
-			const newUser = await User.create({
-				username,
-				email,
-				password: hashPass
-			})
-			await newUser.addRole(roleUser)
+			// // if a password has been provided, then a confirmation must also be provided.
+			// if (req.body.password) {
+			//   await body('passwordConfirmation')
+			//     .equals(req.body.password)
+			//     .withMessage('passwords do not match')
+			//     .run(req);
+			// }
 
-			const addedUser = await User.findOne({
-				where: { id: newUser.id },
-				include: Role
-			})
+			const { username, email, password } = req.body
+			// TODO: catch errors
+			if (!email || !password) {
+				// return res.status(401).json({ message: 'Absent email/password' })
+				return next(CustomError.badRequest('Absent email or password'))
+			}
 
-			console.log(addedUser)
+			const candidate = await User.findOne({ where: { email } })
+			if (candidate) {
+				// return res.status(401).json({ message: 'Email already exist' })
+				return next(CustomError.badRequest('Email already exist'))
+			}
 
-			const token = generateJwt(
-				addedUser.id,
-				addedUser.username,
-				addedUser.email,
-				addedUser.roles.map(role => role.name)
-			)
+			const hashPass = await bcrypt.hash(password, 5)
 
-			return res.json({ token })
+			try {
+				const roleUser = await Role.findOne({ where: { name: 'USER' } })
+
+				const newUser = await User.create({
+					username,
+					email,
+					password: hashPass
+				})
+				await newUser.addRole(roleUser)
+
+				const addedUser = await User.findOne({
+					where: { id: newUser.id },
+					include: Role
+				})
+
+				const token = generateJwt(
+					addedUser.id,
+					addedUser.username,
+					addedUser.email,
+					addedUser.roles.map(role => role.name)
+				)
+
+				return res.json({ token })
+			} catch (e) {
+				console.error(e)
+				return next(CustomError.internal('Failed to create user'))
+			}
 		} catch (e) {
 			console.error(e)
-			return next(CustomError.internal('Failed to create user'))
 		}
 
 		// Promise.all([
@@ -76,30 +108,40 @@ class AuthController {
 	}
 
 	async login(req, res, next) {
-		const { email, password } = req.body
-		// TODO: catch errors
-		const user = await User.findOne({
-			where: { email },
-			include: Role
-		})
-		if (!user) {
-			// return res.status(401).json({ message: 'Email not exist' })
-			return next(CustomError.badRequest('Email not exist'))
-		}
+		try {
+			const validation = validationResult(req)
+			if (!validation.isEmpty()) {
+				return res.status(400).json({ message: 'Validation error', validation })
+			}
 
-		const isIdenticalPass = bcrypt.compareSync(password, user.password)
-		if (!isIdenticalPass) {
-			// return res.status(401).json({ message: 'Incorrect password' })
-			return next(CustomError.badRequest('Incorrect password'))
-		}
+			const { email, password } = req.body
+			// TODO: catch errors
+			const user = await User.findOne({
+				where: { email },
+				include: Role
+			})
+			if (!user) {
+				// return res.status(401).json({ message: 'Email not exist' })
+				return next(CustomError.badRequest('Email not exist'))
+			}
 
-		const token = generateJwt(
-			user.id,
-			user.username,
-			user.email,
-			user.roles.map(role => role.name)
-		)
-		return res.json({ token })
+			const isIdenticalPass = bcrypt.compareSync(password, user.password)
+			if (!isIdenticalPass) {
+				// return res.status(401).json({ message: 'Incorrect password' })
+				return next(CustomError.badRequest('Incorrect password'))
+			}
+
+			const token = generateJwt(
+				user.id,
+				user.username,
+				user.email,
+				user.roles.map(role => role.name)
+			)
+			return res.json({ token })
+		} catch (e) {
+			console.error(e)
+			res.status(400).json({ message: 'Login error (in Controller)' })
+		}
 	}
 
 	async check(req, res) {
