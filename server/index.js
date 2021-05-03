@@ -4,7 +4,7 @@ const express = require('express')
 const path = require('path')
 const routes = require('./routes')
 const db = require('./db.config')
-const { Role } = require('./models/dbModels')
+const { Role } = require('./models/dbAuthModels')
 const errorMiddleware = require('./middleware/errorMiddleware')
 
 const PORT = process.env.PORT || 5000
@@ -18,35 +18,36 @@ app.use(errorMiddleware)
 
 // TODO: delete test route below
 app.get('/', (req, res) => {
-  res.status(200).json({ message: 'All right!' })
+	res.status(200).json({ message: 'All right!' })
 })
 
 const startDbConnection = async () => {
-  try {
-    // await db.authenticate().then(await db.sync())
-    // await db.authenticate() // logging: false
-    await db.sync()
+	try {
+		// await db.authenticate().then(await db.sync())
+		// await db.authenticate() // logging: false
+		await db.sync()
 
+		await Role.findOrCreate({
+			where: { name: 'ADMIN' },
+			defaults: { name: 'ADMIN' }
+		})
+		// .then(
+		await Role.findOrCreate({
+			where: { name: 'USER' },
+			defaults: { name: 'USER' }
+		})
+			.then(() => {
+				// )
 
-    await Role.findOrCreate({
-      where: { name: 'ADMIN' },
-      defaults: { name: 'ADMIN' }
-    })
-    // .then(
-    await Role.findOrCreate({
-      where: { name: 'USER' },
-      defaults: { name: 'USER' }
-    }).then(() => {
-      // )
-
-      app.listen(PORT, () => {
-        console.log(`Server starting on ${ PORT } port...`)
-      })
-    }).catch(e => console.error(e))
-  } catch (e) {
-    console.error(e)
-  }
+				app.listen(PORT, () => {
+					console.log(`Server starting on ${PORT} port...`)
+				})
+			})
+			.catch(e => console.error(e))
+	} catch (e) {
+		console.error(e)
+	}
 }
 
 startDbConnection()
-  // .then(() => db.close())
+// .then(() => db.close())
