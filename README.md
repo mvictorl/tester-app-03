@@ -1,4 +1,4 @@
-## 1. Server
+### 1. Server
 1. Packages:
    1. express
    2. express-validator
@@ -16,7 +16,7 @@
 
 [All Sequelize ORM "Magic Methods" in diagrams](https://medium.com/@julianne.marik/sequelize-associations-magic-methods-c72008db91c9)
 
-## 2. Client
+### 2. Client
 1. Packages:
    1. create-react-app (npx: react, react-dom, react-scripts)
    2. react-router-dom

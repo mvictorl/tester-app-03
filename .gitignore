@@ -3,6 +3,7 @@ node_modules
 
 # testing
 coverage
+sqlite.db
 
 # production
 build
