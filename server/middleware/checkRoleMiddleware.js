@@ -1,6 +1,6 @@
 const verify = require('jsonwebtoken').verify
 
-module.exports = function (role) {
+module.exports = function (accessRoles) {
 	return function (req, res, next) {
 		if (req.method === 'OPTION') {
 			next()
@@ -13,9 +13,13 @@ module.exports = function (role) {
 			}
 			// decodedToken = {id, username, email, roles}
 			const decodedToken = verify(userToken, process.env.SECRET_KEY)
-			if (!decodedToken?.roles.includes(role)) {
+			// if (!decodedToken?.roles.includes(roles)) {
+			// 	return res.status(403).json({ message: 'Access denied' })
+			// }
+			if (!accessRoles.some(el => decodedToken?.roles.includes(el))) {
 				return res.status(403).json({ message: 'Access denied' })
 			}
+
 			// Add `user` object from token to request
 			// user = {id, username, email, roles}
 			req.user = decodedToken

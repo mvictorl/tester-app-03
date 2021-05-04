@@ -13,25 +13,6 @@ router.post(
 	'/register',
 
 	registerValidate(),
-	// body('username')
-	// 	.notEmpty()
-	// 	.withMessage('User name can not be empty')
-	// 	.trim()
-	// 	.escape()
-	// 	.isLength({ min: 5, max: 25 })
-	// 	.withMessage('User name mast be beetwen 5 & 25 characters')
-	// 	.custom(value => {
-	// 		return
-	// 	}),
-	// body('email')
-	// 	.notEmpty()
-	// 	.withMessage('Email can not be empty')
-	// 	.isEmail()
-	// 	.withMessage('Enter correct email')
-	// 	.normalizeEmail(),
-	// body('password')
-	// 	.isLength({ min: 5, max: 25 })
-	// 	.withMessage('Password mast be beetwen 5 & 25 characters'),
 
 	authController.register
 )
@@ -45,22 +26,20 @@ router.post(
 		.isEmail()
 		.withMessage('Enter correct email'),
 	// .normalizeEmail(),
-	body('password')
-		.isLength({ min: 10, max: 25 })
-		.withMessage('Password mast be beetwen 5 & 25 characters'),
+	body('password').notEmpty().withMessage('Password can not empty'),
 
 	authController.login
 )
 
 router.get('/check', auth, authController.check)
 
-router.get('/users', roleCheck('ADMIN'), authController.getUsers)
+router.get('/users', roleCheck(['ADMIN']), authController.getUsers)
 
-router.get('/roles', roleCheck('ADMIN'), authController.getRoles)
+router.get('/roles', roleCheck(['ADMIN']), authController.getRoles)
 
-router.put('/change', roleCheck('ADMIN'), authController.change)
+router.put('/change', roleCheck(['ADMIN']), authController.change)
 // TODO: temporary route for test role check (delete it after)
-router.get('/temp', roleCheck('ADMIN'), (req, res) => {
+router.get('/temp', roleCheck(['SUPER', 'ADMIN']), (req, res) => {
 	res.status(200).json({ message: 'You has access!' })
 })
 
