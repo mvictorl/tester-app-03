@@ -7,7 +7,7 @@ const registerSchema = {
 		notEmpty: {
 			errorMessage: 'Email can not be empty'
 		},
-		normalizeEmail: true,
+		// normalizeEmail: true, // user@ya.ru => user@yandex.ru
 		isEmail: {
 			bail: true,
 			errorMessage: 'Wrong email address'
