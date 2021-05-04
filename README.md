@@ -1,14 +1,15 @@
 ## 1. Server
 1. Packages:
    1. express
-   2. cors
-   3. dotenv
-   4. jsonwebtoken
-   5. bcryptjs
-   6. uuid
-   7. ___
-   8. sequelize
-   9. sqlite3
+   2. express-validator
+   3. cors
+   4. dotenv
+   5. jsonwebtoken
+   6. bcryptjs
+   7. uuid
+   8. ___
+   9. sequelize
+   10. sqlite3
    + nodemon (development dependence)
 
 [Sequelize ORM Many-2-Many association example & "Magic Methods"](https://medium.com/@jasmine.esplago.munoz/feeling-the-magic-with-sequelize-magic-methods-e9cc89ecdcc5)
