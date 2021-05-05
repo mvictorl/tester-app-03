@@ -5,19 +5,15 @@ import { adminRoute, publicRoute } from '../routes'
 import { HOME_ROUTE } from '../utils/consts'
 import Admin from '../pages/Admin'
 
-const AppRouter = () => {
-	const { user } = useContext(Context)
-	console.log('AppRouter isAuth', user.isAuth)
+const AppRouter = ({ isAuth }) => {
+	// const { user } = useContext(Context)
+	console.log('AppRouter isAuth', isAuth)
 	return (
 		<Switch>
-			{
-				user.isAuth && (
-					<Route path="/admin" exact component={Admin} key="/admin" />
-				)
-				// adminRoute.map(({ path, component }) => (
-				// 	<Route path={path} exact component={component} key={path} />
-				// ))
-			}
+			{isAuth &&
+				adminRoute.map(({ path, component }) => (
+					<Route path={path} exact component={component} key={path} />
+				))}
 			{publicRoute.map(({ path, component }) => (
 				<Route path={path} exact component={component} key={path} />
 			))}

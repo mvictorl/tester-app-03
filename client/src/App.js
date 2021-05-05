@@ -9,19 +9,24 @@ function App() {
 	const { user } = useContext(Context)
 
 	useEffect(() => {
-		check().then(data => {
-			console.log(data)
-			user.setUser(true)
-			user.setIsAuth(true)
-		})
+		user.setUser(true)
+		user.setIsAuth(true)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
+	// useEffect(() => {
+	// 	check().then(data => {
+	// 		console.log(data)
+	// 		user.setUser(true)
+	// 		user.setIsAuth(true)
+	// 	})
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [])
 
 	console.log('App isAuth', user.isAuth)
 
 	return (
 		<BrowserRouter>
-			<AppRouter />
+			<AppRouter isAuth={user.isAuth} />
 		</BrowserRouter>
 	)
 }
