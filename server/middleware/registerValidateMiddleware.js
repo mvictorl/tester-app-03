@@ -24,9 +24,9 @@ const registerSchema = {
 	},
 	password: {
 		isLength: {
-			errorMessage: 'Password should be at least 7 chars long',
+			errorMessage: 'Password should be at least 5 chars long',
 			// Multiple options would be expressed as an array
-			options: { min: 7 }
+			options: { min: 5 }
 		}
 		// isStrongPassword: {
 		// 	minLength: 8,

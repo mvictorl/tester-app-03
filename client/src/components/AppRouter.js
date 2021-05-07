@@ -7,7 +7,6 @@ import Admin from '../pages/Admin'
 
 const AppRouter = ({ isAuth }) => {
 	// const { user } = useContext(Context)
-	console.log('AppRouter isAuth', isAuth)
 	return (
 		<Switch>
 			{isAuth &&

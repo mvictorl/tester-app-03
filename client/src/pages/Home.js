@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { Container } from '@material-ui/core'
+import { Container } from 'react-bootstrap'
 import { ADMIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE } from '../utils/consts'
 
 const Home = () => {

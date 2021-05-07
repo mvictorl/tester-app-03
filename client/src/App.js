@@ -22,8 +22,6 @@ function App() {
 	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	// }, [])
 
-	console.log('App isAuth', user.isAuth)
-
 	return (
 		<BrowserRouter>
 			<AppRouter isAuth={user.isAuth} />
