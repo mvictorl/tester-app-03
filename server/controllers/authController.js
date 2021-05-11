@@ -28,7 +28,7 @@ class AuthController {
 					'Email address already used (Schema)'
 				) {
 					return res
-						.status(409) // Status for dublicate emails
+						.status(409) // Status for duplicate emails
 						.json({ message: 'Validation error', validation })
 				}
 				return res.status(400).json({ message: 'Validation error', validation })
