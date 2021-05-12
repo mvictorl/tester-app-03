@@ -120,16 +120,19 @@ class AuthController {
 				where: { email },
 				include: Role
 			})
-			if (!user) {
-				// return res.status(401).json({ message: 'Email not exist' })
-				return next(CustomError.badRequest('Email not exist'))
-			}
 
-			const isIdenticalPass = bcrypt.compareSync(password, user.password)
-			if (!isIdenticalPass) {
-				// return res.status(401).json({ message: 'Incorrect password' })
-				return next(CustomError.badRequest('Incorrect password'))
-			}
+			// Conditions below checks by loginValidateMiddleware
+			//
+			// if (!user) {
+			// 	// return res.status(401).json({ message: 'Email not exist' })
+			// 	return next(CustomError.badRequest('Email not exist'))
+			// }
+
+			// const isIdenticalPass = bcrypt.compareSync(password, user.password)
+			// if (!isIdenticalPass) {
+			// 	// return res.status(401).json({ message: 'Incorrect password' })
+			// 	return next(CustomError.badRequest('Incorrect password'))
+			// }
 
 			const token = generateJwt(
 				user.id,

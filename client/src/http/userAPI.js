@@ -34,7 +34,6 @@ export async function login(email, password) {
 			payload: jwt_decode(data.token)
 		}
 	} catch (e) {
-		console.log('ERROR:', e.response.data)
 		return {
 			isSuccess: false,
 			payload: e.response.data

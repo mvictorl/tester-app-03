@@ -3,13 +3,12 @@ import { Context } from '..'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { adminRoute, publicRoute } from '../routes'
 import { HOME_ROUTE } from '../utils/consts'
-import Admin from '../pages/Admin'
 
-const AppRouter = ({ isAuth }) => {
-	// const { user } = useContext(Context)
+const AppRouter = () => {
+	const { user } = useContext(Context)
 	return (
 		<Switch>
-			{isAuth &&
+			{user.isAuth &&
 				adminRoute.map(({ path, component }) => (
 					<Route path={path} exact component={component} key={path} />
 				))}

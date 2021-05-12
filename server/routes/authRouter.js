@@ -4,32 +4,15 @@ const authController = require('../controllers/authController')
 const auth = require('../middleware/authMiddleware')
 
 const registerValidate = require('../middleware/registerValidateMiddleware')
+const loginValidate = require('../middleware/loginValidateMiddleware')
 
 const roleCheck = require('../middleware/checkRoleMiddleware')
 
 const router = new Router()
 // TODO: confirmation password required
-router.post(
-	'/register',
+router.post('/register', registerValidate(), authController.register)
 
-	registerValidate(),
-
-	authController.register
-)
-
-router.post(
-	'/login',
-
-	body('email')
-		.notEmpty()
-		.withMessage('Email can not be empty')
-		.isEmail()
-		.withMessage('Enter correct email'),
-	// .normalizeEmail(),
-	body('password').notEmpty().withMessage('Password can not empty'),
-
-	authController.login
-)
+router.post('/login', loginValidate(), authController.login)
 
 router.get('/check', auth, authController.check)
 
