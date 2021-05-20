@@ -31,6 +31,11 @@ const dbInit = async () => {
 		where: { name: 'USER' },
 		defaults: { name: 'USER' }
 	})
+
+  await Role.findOrCreate({
+    where: { name: 'MAKER' },
+    defaults: { name: 'MAKER' }
+  })
 }
 
 module.exports = dbInit

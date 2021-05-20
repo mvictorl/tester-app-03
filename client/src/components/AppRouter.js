@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { Context } from '..'
 import { Redirect, Route, Switch } from 'react-router-dom'
-import { adminRoute, publicRoute } from '../routes'
+import { adminRoute, makerRoute, publicRoute } from '../routes'
 import { HOME_ROUTE } from '../utils/consts'
 
 const AppRouter = () => {
@@ -12,6 +12,13 @@ const AppRouter = () => {
 				adminRoute.map(({ path, component }) => (
 					<Route path={path} exact component={component} key={path} />
 				))}
+
+      {user.isAuth && user.roles?.includes('MAKER') &&
+        makerRoute.map(({ path, component}) => (
+          <Route path={path} exact component={component} key={path} />
+        ))
+      }
+
 			{publicRoute.map(({ path, component }) => (
 				<Route path={path} exact component={component} key={path} />
 			))}

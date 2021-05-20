@@ -4,7 +4,6 @@ module.exports = function (req, res, next) {
   if (req.method === 'OPTION') {
     next()
   }
-
   try {
     const userToken = req.headers.authorization.split(' ')[1]
     if (!userToken) {

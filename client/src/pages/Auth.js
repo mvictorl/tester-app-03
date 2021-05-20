@@ -7,7 +7,7 @@ import { Button, Card, Container, Form, Row } from 'react-bootstrap'
 import { login, registration } from '../http/userAPI'
 
 const Auth = () => {
-	const { user } = useContext(Context)
+	const { user, app } = useContext(Context)
 	const [username, setUsername] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
@@ -40,7 +40,13 @@ const Auth = () => {
 			if (data.isSuccess) {
 				user.setUser(data.payload)
 				user.setIsAuth(true)
-				history.push(HOME_ROUTE)
+
+        app.setInfoTitle('Success user register')
+        app.setInfoText(`E-mail: ${user.user.email}`)
+        app.setInfoDuration(2000)
+        app.setInfoShow(true)
+
+        isLoginPage ? history.push(HOME_ROUTE) : history.push(LOGIN_ROUTE)
 			} else {
 				if (data.payload.validation) {
 					data.payload.validation.errors.forEach(err => {
