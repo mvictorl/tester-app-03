@@ -14,7 +14,6 @@ function App() {
   useEffect(() => {
     check()
       .then(data => {
-        console.log('data', data)
         user.setUser(data)
         user.setIsAuth(true)
       })

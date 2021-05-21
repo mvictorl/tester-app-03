@@ -11,7 +11,9 @@ export const $authHost = axios.create({
 $authHost.interceptors.request.use(authInterception)
 
 function authInterception(config) {
-	config.headers.authorization = `Bearer ${localStorage.getItem('jwt')}`
+  if (localStorage.getItem('jwt')) {
+    config.headers.authorization = `Bearer ${ localStorage.getItem('jwt') }`
+  }
 	return config
 }
 

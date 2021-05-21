@@ -14,7 +14,6 @@ import {
 
 const Home = () => {
   const { user } = useContext(Context)
-  console.log('Home user', { ...user.user })
 
   function userOnExit() {
     localStorage.removeItem('jwt')

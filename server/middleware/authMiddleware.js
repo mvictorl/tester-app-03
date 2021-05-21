@@ -5,9 +5,9 @@ module.exports = function (req, res, next) {
     next()
   }
   try {
-    const userToken = req.headers.authorization.split(' ')[1]
+    const userToken = req.headers.authorization?.split(' ')[1]
     if (!userToken) {
-      return res.status(401).json({ message: 'Unauthorized user' })
+      return res.status(204).json({ message: 'Unauthorized user' })
     }
     // Add `user` object from token to request
     // user = {id, username, email, role}
